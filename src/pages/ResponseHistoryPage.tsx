@@ -1,5 +1,9 @@
 import { Group, Pagination, TextInput } from "@mantine/core";
-import { useDisclosure, useInputState } from "@mantine/hooks";
+import {
+  useDebouncedValue,
+  useDisclosure,
+  useInputState,
+} from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import DateSelectMenu from "components/base/input/DateSelectMenu";
 import PageContainer from "components/base/PageContainer";
@@ -8,9 +12,16 @@ import ResponseHistoryTable from "components/response/ResponseHistoryTable";
 import useResponseHistory from "hooks/useResponseHistory";
 import { useEffect, useState } from "react";
 import { dateToString } from "utils/date";
+import { sendEvent } from "utils/logs/gaUtils";
 
 const ResponseHistoryPage: React.FC = () => {
   const [search, setSearch] = useInputState("");
+
+  const [debouncedSearch] = useDebouncedValue(search, 500);
+
+  useEffect(() => {
+    sendEvent("search_text", { value: debouncedSearch });
+  }, [debouncedSearch]);
 
   const [page, setPage] = useState(1);
 
