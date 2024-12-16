@@ -11,7 +11,7 @@ const useAddUser = () => {
 
   return useMutation({
     mutationFn: async (user: User) => {
-      const sheet = doc.sheetsByIndex[userWorkSheetID];
+      const sheet = doc.sheetsById[userWorkSheetID];
 
       const rows = await sheet.getRows<User>();
 
@@ -19,7 +19,7 @@ const useAddUser = () => {
 
       if (existUser) {
         throw new Error(
-          `이미 등록된 사용자 이메일입니다. ${existUser.get("name")}`
+          `이미 등록된 사용자입니다. 사용자 이름: ${existUser.get("name")}`
         );
       }
 

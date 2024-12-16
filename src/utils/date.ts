@@ -21,3 +21,6 @@ export const isGreaterOrSame = (a: Date, b: Date): boolean => {
 
   return false;
 };
+
+export const toResponseDate = (date: Date): string =>
+  date.toISOString().slice(0, 10);

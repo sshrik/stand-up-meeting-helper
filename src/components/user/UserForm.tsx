@@ -1,5 +1,6 @@
-import { Button, NumberInput, Stack, TextInput } from "@mantine/core";
+import { Alert, Button, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import useAddUser from "hooks/useAddUser";
 import User from "models/User";
 
 type UserFormProps = {
@@ -8,6 +9,8 @@ type UserFormProps = {
 
 const UserForm: React.FC<UserFormProps> = (props) => {
   const { onSuccess } = props;
+
+  const { mutate: addUser, isPending, isError, error } = useAddUser();
 
   const { getInputProps, onSubmit } = useForm<User>({
     initialValues: {
@@ -34,17 +37,23 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   });
 
   const handleSubmit = onSubmit((values) => {
-    console.log(values);
-    onSuccess?.();
+    addUser(values, { onSuccess });
   });
 
   return (
     <form onSubmit={handleSubmit}>
       <Stack maw={450}>
         <TextInput label="이름" {...getInputProps("name")} />
-        <NumberInput label="나이" {...getInputProps("age")} />
-        <TextInput label="오늘의 한마디" {...getInputProps("today")} />
-        <Button type="submit">추가</Button>
+        <TextInput label="팀" {...getInputProps("team")} />
+        <TextInput type="email" label="이메일" {...getInputProps("email")} />
+        {isError && (
+          <Alert color="red" title="사용자를 추가할 수 없습니다.">
+            {error?.message}
+          </Alert>
+        )}
+        <Button type="submit" loading={isPending}>
+          추가
+        </Button>
       </Stack>
     </form>
   );

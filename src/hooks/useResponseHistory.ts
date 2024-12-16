@@ -15,22 +15,21 @@ const useResponseHistory = (props?: useResponseHistoryProps) => {
   const doc = useAtomValue(SpreadSheetAtom);
 
   return useQuery<ResponseHistory[]>({
-    queryKey: ["responses"],
+    queryKey: ["responses", props],
     queryFn: async () => {
       const rows = await doc.sheetsById[
         responseWorkSheetID
       ].getRows<ResponseHistory>();
 
-      return rows.map((row) => ({
+      const data = rows.map((row) => ({
         userName: row.get("userName"),
         feeling: row.get("feeling"),
         lastTask: row.get("lastTask"),
         todayTask: row.get("todayTask"),
         responseDate: row.get("responseDate"),
       }));
-    },
-    select: (data) =>
-      data
+
+      return data
         .filter((row) => {
           if (props?.startDate) {
             if (props?.endDate) {
@@ -40,7 +39,7 @@ const useResponseHistory = (props?: useResponseHistoryProps) => {
               );
             }
 
-            return new Date(row.responseDate) >= props.startDate;
+            return isGreaterOrSame(new Date(row.responseDate), props.startDate);
           }
           return true;
         })
@@ -56,7 +55,8 @@ const useResponseHistory = (props?: useResponseHistoryProps) => {
           }
           return true;
         })
-        .reverse(),
+        .reverse();
+    },
   });
 };
 

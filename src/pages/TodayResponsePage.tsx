@@ -6,6 +6,7 @@ import PageContainer from "components/base/PageContainer";
 import PageTitle from "components/base/PageTitle";
 import useAddTodayResponse from "hooks/useAddTodayResponse";
 import { TodayResponse } from "models/TodayResponse";
+import { useNavigate } from "react-router";
 import { todayString } from "utils/date";
 
 const TodayResponsePage: React.FC = () => {
@@ -40,8 +41,12 @@ const TodayResponsePage: React.FC = () => {
     error,
   } = useAddTodayResponse();
 
+  const navigate = useNavigate();
+
   const handleSubmit = onSubmit((values) => {
-    addResponse(values);
+    addResponse(values, {
+      onSuccess: () => navigate("/"),
+    });
   });
 
   return (

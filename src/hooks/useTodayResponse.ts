@@ -3,6 +3,7 @@ import { responseWorkSheetID } from "constants/SpreadSheet";
 import { useAtomValue } from "jotai";
 import { ResponseHistory } from "models/ResponseHistory";
 import { TodayResponse } from "models/TodayResponse";
+import { toResponseDate } from "utils/date";
 import { SpreadSheetAtom } from "utils/states/SpreadSheet";
 
 const useTodayResponse = () => {
@@ -16,10 +17,7 @@ const useTodayResponse = () => {
       ].getRows<ResponseHistory>();
 
       return rows
-        .filter(
-          (row) =>
-            row.get("responseDate") === new Date().toISOString().slice(0, 10)
-        )
+        .filter((row) => row.get("responseDate") === toResponseDate(new Date()))
         .map((row) => ({
           userName: row.get("userName"),
           feeling: row.get("feeling"),
