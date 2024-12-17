@@ -45,11 +45,11 @@ const UserTable: React.FC = () => {
       (user) =>
         user.name.includes(search) ||
         user.email.includes(search) ||
-        user.team.toString().includes(search)
+        user.team.includes(search)
     ) || [];
 
   const tableData = {
-    head: ["이름", "나이", "오늘의 한마디"],
+    head: ["이름", "이메일", "팀"],
     body: filteredData
       .slice((page - 1) * PageSize, page * PageSize)
       .map((user) => [user.name, user.email, user.team]),
